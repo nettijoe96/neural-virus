@@ -1,7 +1,13 @@
+
+# must be run once on your machine
+# import nltk
+# nltk.download('stopwords')
+
 from nltk.corpus import stopwords
 import pandas as pd
 import glob
 import json
+import string
 
 root_path = '../data/CORD-19-research-challenge/'
 metadata_path = f'{root_path}/metadata.csv'
@@ -44,22 +50,40 @@ def loadAllData():
     # for json in all_json:
     #     files += [FileReader(json)]
 
-    # loading 5000 files
+    # loading singe file
     # not all files have abstracts. it turns out the first 5000 don't, but most of the last 5000 do (hence for testing, the -1)
-    files = []
-    for i in range(0, 5000):
-        files += [FileReader(all_json[-1*i])]
+    fileObjs = []
+    for i in range(1, 2):
+        fileObjs += [FileReader(all_json[-1*i])]
 
-    # pulling out abstracts
-    json_with_abstracts = []
-    for ele in files:
-        if len(ele.abstract) != 0:
-            json_with_abstracts += [ele]
+    return fileObjs
 
-    print()
+# from https://machinelearningmastery.com/develop-word-embedding-model-predicting-movie-review-sentiment/
+def cleanText(textStr):
+    tokens = textStr.split(" ")
+    # remove punctuation from each token
+    table = str.maketrans('', '', string.punctuation)
+    tokens = [w.translate(table) for w in tokens]
+    # remove remaining tokens that are not alphabetic
+    tokens = [word for word in tokens if word.isalpha()]
+    # filter out stop words
+    stop_words = set(stopwords.words('english'))
+    tokens = [w for w in tokens if not w in stop_words]
+    # filter out short tokens
+    tokens = [word for word in tokens if len(word) > 1]
+    return tokens
 
-loadAllData()
 
+fileObjs = loadAllData()
+# pulling out abstracts
+json_with_abstracts = []
+for ele in fileObjs:
+    if len(ele.abstract) != 0:
+        json_with_abstracts += [ele]
 
-def getAbstracts(file):
-    pass
+abstracts = []
+for f in json_with_abstracts:
+    cleaned_entry = cleanText(f.abstract)
+    abstracts += [cleaned_entry]
+
+print()

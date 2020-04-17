@@ -53,7 +53,7 @@ def loadAllData():
     # loading singe file
     # not all files have abstracts. it turns out the first 5000 don't, but most of the last 5000 do (hence for testing, the -1)
     fileObjs = []
-    for i in range(1, 2):
+    for i in range(1, 50):
         fileObjs += [FileReader(all_json[-1*i])]
 
     return fileObjs

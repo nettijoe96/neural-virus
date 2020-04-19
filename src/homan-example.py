@@ -49,10 +49,11 @@ def preprocess_stem_clean(text):
 # article
 i = 0
 k = 0
+data_path = '../data/CORD-19-research-challenge/'
 
 corona_all_text = []
 Y=[]
-for dirname, _, filenames in os.walk('../input'):
+for dirname, _, filenames in os.walk(data_path):
     for filename in filenames:
         #print(os.path.join(dirname, filename))
         i += 1

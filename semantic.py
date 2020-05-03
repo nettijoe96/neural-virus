@@ -21,6 +21,7 @@ from tensorflow.keras.layers import Conv1D
 from tensorflow.keras.layers import MaxPooling1D
 #from tensorflow.keras.callbacks import Tensorboard
 import tensorflow as tf
+import models
 #import keras
 
 ############################################
@@ -242,14 +243,8 @@ print(len(ytest))
 vocab_size = len(tokenizer.word_index) + 1
 
 # define model
-model = Sequential()
-model.add(Embedding(vocab_size, 100, input_length=max_length))
-model.add(Conv1D(filters=32, kernel_size=8, activation='relu'))
-model.add(MaxPooling1D(pool_size=2))
-model.add(Flatten())
-model.add(Dense(10, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
-print(model.summary())
+model = models.model1(vocab_size, max_length)
+epochs = 20
 
 log_dir = "logs/"
 model_name = "model_1"
@@ -260,58 +255,8 @@ tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=fit_dir, histogram
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 # fit network
 #model.fit(Xtrain, ytrain, epochs=100, validation_data=(Xvalid, yvalid), verbose=2)
-model.fit(Xtrain, ytrain, epochs=100, validation_data=(Xvalid, yvalid), verbose=2, callbacks=[tensorboard_callback])
+model.fit(Xtrain, ytrain, epochs=epochs, validation_data=(Xvalid, yvalid), verbose=2, callbacks=[tensorboard_callback])
 # evaluate
 loss, acc = model.evaluate(Xtest, ytest, verbose=0)
 print('Test Accuracy: %f' % (acc*100))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

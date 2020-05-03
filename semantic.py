@@ -3,7 +3,21 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import glob
 import json
 import sys
-
+from string import punctuation
+from os import listdir
+from collections import Counter
+from nltk.corpus import stopwords
+from string import punctuation
+from os import listdir
+from numpy import array
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Flatten
+from keras.layers import Embedding
+from keras.layers.convolutional import Conv1D
+from keras.layers.convolutional import MaxPooling1D
 
 ############################################
 ### Load All Papers - Cleaned and Spaced
@@ -66,10 +80,6 @@ print(len(negative_papers))
 ### Create Vocabulary from Papers
 ############################################
 
-from string import punctuation
-from os import listdir
-from collections import Counter
-from nltk.corpus import stopwords
 
 # turn a doc into clean tokens
 def clean_doc_vocab(doc):
@@ -123,17 +133,6 @@ vocab = set(vocab)
 ### Load Train, Validation, and Test sets
 ############################################
 
-from string import punctuation
-from os import listdir
-from numpy import array
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Flatten
-from keras.layers import Embedding
-from keras.layers.convolutional import Conv1D
-from keras.layers.convolutional import MaxPooling1D
 
 # turn a doc into clean tokens
 def clean_doc(doc, vocab):
@@ -248,10 +247,14 @@ model.add(Dense(10, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 print(model.summary())
 
+log_dir = "logs/"
+fit_dir = log_dir + "fit/" + str(model_name) + "_" + datetime.datetime.now().strftime("%Y%m%d-%H%M")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=fit_dir, histogram_freq=1)
+
 # compile network
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 # fit network
-model.fit(Xtrain, ytrain, epochs=100, validation_data=(Xvalid, yvalid), verbose=2)
+model.fit(Xtrain, ytrain, epochs=100, validation_data=(Xvalid, yvalid), verbose=2, callbacks=[tensorboard_callback])
 # evaluate
 loss, acc = model.evaluate(Xtest, ytest, verbose=0)
 print('Test Accuracy: %f' % (acc*100))

@@ -1,3 +1,4 @@
+import datetime
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import glob
@@ -10,14 +11,17 @@ from nltk.corpus import stopwords
 from string import punctuation
 from os import listdir
 from numpy import array
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Flatten
-from keras.layers import Embedding
-from keras.layers.convolutional import Conv1D
-from keras.layers.convolutional import MaxPooling1D
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Embedding
+from tensorflow.keras.layers import Conv1D
+from tensorflow.keras.layers import MaxPooling1D
+#from tensorflow.keras.callbacks import Tensorboard
+import tensorflow as tf
+#import keras
 
 ############################################
 ### Load All Papers - Cleaned and Spaced
@@ -231,7 +235,7 @@ print(ytrain)
 print(len(ytrain))
 print(yvalid)
 print(len(yvalid))
-print(ytest)
+#print(ytest)
 print(len(ytest))
 
 # define vocabulary size (largest integer value)
@@ -248,12 +252,14 @@ model.add(Dense(1, activation='sigmoid'))
 print(model.summary())
 
 log_dir = "logs/"
+model_name = "model_1"
 fit_dir = log_dir + "fit/" + str(model_name) + "_" + datetime.datetime.now().strftime("%Y%m%d-%H%M")
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=fit_dir, histogram_freq=1)
 
 # compile network
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 # fit network
+#model.fit(Xtrain, ytrain, epochs=100, validation_data=(Xvalid, yvalid), verbose=2)
 model.fit(Xtrain, ytrain, epochs=100, validation_data=(Xvalid, yvalid), verbose=2, callbacks=[tensorboard_callback])
 # evaluate
 loss, acc = model.evaluate(Xtest, ytest, verbose=0)

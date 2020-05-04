@@ -1,0 +1,8 @@
+datetime
+nltk
+tensorflow
+pandas
+matplotlib
+numpy
+keras
+notebook

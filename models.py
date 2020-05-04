@@ -6,6 +6,7 @@ from tensorflow.keras.layers import Conv1D
 from tensorflow.keras.layers import MaxPooling1D
 
 
+# this is the best model
 def model1(vocab_size, max_length):
     model = Sequential()
     model.add(Embedding(vocab_size, 100, input_length=max_length))
@@ -16,7 +17,7 @@ def model1(vocab_size, max_length):
     model.add(Dense(1, activation='sigmoid'))
     return model
 
-
+# this is the worst model because of final relu
 def model2(vocab_size, max_length):
     model = Sequential()
     model.add(Embedding(vocab_size, 100, input_length=max_length))
